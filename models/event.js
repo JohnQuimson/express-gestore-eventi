@@ -1,8 +1,7 @@
 const path = require('path');
 const fs = require('fs');
-const { rejects } = require('assert');
 
-const filePath = path.join(__dirname, '../db/events.js');
+const filePath = path.join(__dirname, '../db/events.json');
 
 class Event {
   constructor(id, title, description, date, maxSeats) {
@@ -13,33 +12,30 @@ class Event {
     this.maxSeats = maxSeats;
   }
 
-  // read data
-  static getEvent() {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, (error, data) => {
-        if (error) {
-          return reject(error);
-        }
-        const events = JSON.parse(data);
-        resolve(events);
-      });
-    });
+  static getEvents() {
+    return require(filePath);
   }
 
-  // save data
-  static saveEvent(event) {
-    return new Promise((resolve, reject) => {
-      Event.getEvent()
-        .then((events) => {
-          events.push(event);
-          fs.writeFile(filePath, JSON.stringify(events), (error) => {
-            if (error) {
-              return reject(error);
-            }
-            resolve();
-          });
-        })
-        .catch((error) => reject(error));
+  static createEvent(event) {
+    const newEvent = JSON.stringify([...Event.getEvents(), { ...event }]);
+    fs.writeFileSync(filePath, newEvent, 'utf-8');
+    console.log(`Successfully created a new event with title ${event.title}`);
+  }
+
+  static getEventById(id) {
+    const events = require(filePath);
+    return events.find((event) => event.id === id);
+  }
+
+  static getEventsFiltered(filters) {
+    const events = require(filePath);
+    return events.filter((event) => {
+      for (const element in filters) {
+        if (event[element] !== filters[element]) {
+          return false;
+        }
+      }
+      return true;
     });
   }
 }

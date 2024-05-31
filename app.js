@@ -7,10 +7,9 @@ const eventsRouter = require('./routers/events.js');
 app.use(express.json());
 
 // routers
-// app.get('/', eventsRouter);
-app.get('/events', eventsRouter);
+app.use('/events', eventsRouter);
 
-//start server
+// start server
 app.listen(3000, () => {
   console.log('Server attivo sulla porta http://localhost:3000.');
 });
