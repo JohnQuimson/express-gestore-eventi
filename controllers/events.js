@@ -14,9 +14,9 @@ const show = (req, res) => {
     }
     res.json(event);
   } catch (error) {
-    console.error("Errore durante il recupero dell'evento:", error);
+    console.error('Errore: ', error);
     res.status(500).json({
-      error: "Si è verificato un errore durante il recupero dell'evento.",
+      error: 'Errore',
     });
   }
 };
